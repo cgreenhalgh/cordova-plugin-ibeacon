@@ -47,6 +47,8 @@ import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.MonitorNotifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
+import org.altbeacon.beacon.service.RangedBeacon;
+import org.altbeacon.beacon.service.RunningAverageRssiFilter;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
@@ -208,6 +210,8 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
             enableBluetooth(callbackContext);
         } else if (action.equals("disableBluetooth")) {
             disableBluetooth(callbackContext);
+        } else if (action.equals("setRssiFilterRunningAverage")) {
+        	setRssiFilterRunningAverage(args.optLong(0, 0), callbackContext);
         } else {
             return false;
         }
@@ -779,6 +783,26 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
                 } else {
                     return new PluginResult(PluginResult.Status.ERROR, "Log message not provided");
                 }
+            }
+        });
+    }
+
+    private void setRssiFilterRunningAverage(final long expirationMilliseconds, CallbackContext callbackContext) {
+        _handleCallSafely(callbackContext, new ILocationManagerCommand() {
+
+            @Override
+            public PluginResult run() {
+                debugLog("setRssiFilterRunningAverage("+expirationMilliseconds+")");
+
+            	// see https://altbeacon.github.io/android-beacon-library/distance_vs_time.html
+            	// static!
+            	BeaconManager.setRssiFilterImplClass(RunningAverageRssiFilter.class);
+            	// static!
+            	RunningAverageRssiFilter.setSampleExpirationMilliseconds(expirationMilliseconds);
+            	// contra web page this seems to override it
+            	RangedBeacon.setSampleExpirationMilliseconds(expirationMilliseconds);
+            	// RangedBeacon.setMaxTrackinAge
+            	return new PluginResult(PluginResult.Status.OK);
             }
         });
     }

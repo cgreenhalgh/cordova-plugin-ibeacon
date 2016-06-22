@@ -547,6 +547,19 @@ LocationManager.prototype.appendToDeviceLog = function(message) {
 	return this._promisedExec('appendToDeviceLog', [message], []);
 };
 
+/**
+ * Set RSSI filter to RunningAverageRssiFilter with specified
+ * SampleExpirationMilliseconds (default 20 seconds). Android only.
+ * 
+ * @param {Number} SampleExpirationMilliseconds.
+ * 
+ * @returns {Q.Promise} Returns a promise which is resolved as soon as the
+ * native layer has set the filter.
+ */
+LocationManager.prototype.setRssiFilterRunningAverage = function(expirationMilliseconds) {
+	return this._promisedExec('setRssiFilterRunningAverage', [expirationMilliseconds], []);
+};
+
 var locationManager = new LocationManager();
 locationManager.Regions = Regions;
 locationManager.Region = Region;

@@ -216,6 +216,13 @@ cordova.plugins.locationManager.stopRangingBeaconsInRegion(beaconRegion)
 	.done();
 
 ```
+##### Change RSSI smoothing time
+In milliseconds:
+```
+cordova.plugins.locationManager.setRssiFilterRunningAverage(2000)
+	.fail(function(e) { console.error(e); })
+	.done();
+```
 
 ##### Determine if advertising is supported (iOS is supported, Android is not yet)
 
